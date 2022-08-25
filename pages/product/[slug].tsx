@@ -11,6 +11,10 @@ import { StoreContext } from '../../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
+function count(str: String, find: string | RegExp) {
+  return str.split(find).length - 1;
+}
+
 const ProductDetail: React.ReactNode = ({ product }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const { state, dispatch } = useContext(StoreContext);
@@ -64,7 +68,7 @@ const ProductDetail: React.ReactNode = ({ product }: InferGetServerSidePropsType
               </Typography>
             </ListItem>
             <ListItem>
-              <Typography> Description: {product.description}</Typography>
+              <Typography>Description: {product.description.replace(/,/g, '\n').replace(/:/g, ' = ')}</Typography>
             </ListItem>
           </List>
         </Grid>

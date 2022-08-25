@@ -8,6 +8,7 @@ import { Grid, TableContainer, Table, Typography, TableHead, TableBody, TableRow
 import axios from 'axios';
 import { IProduct } from '../models/Product';
 import { useRouter } from 'next/router';
+import data from '../utils/data';
 
 const CartScreen: React.ReactNode = () => {
   const router = useRouter();

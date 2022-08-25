@@ -8,10 +8,11 @@ import CheckoutWizard from '../components/CheckoutWizard';
 import useStyles from '../utils/styles';
 import { Button, FormControl, FormControlLabel, List, ListItem, Radio, RadioGroup, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 
 const Payment: React.ReactNode = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const classes = useStyles();
+  const classes: ClassNameMap = useStyles();
   const router = useRouter();
   const [paymentMethod, setPaymentMethod] = useState('');
   const { state, dispatch } = useContext(StoreContext);

@@ -7,10 +7,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   navbar: {
+    position: 'fixed',
     backgroundColor: '#E43836',
     '& a': {
       color: '#ffffff',
       marginLeft: 10,
+      fontSize: 20,
     },
   },
   brand: {
