@@ -88,6 +88,18 @@ const data = {
       countInStock: 0,
       description: 'A popular pants',
     },
+    {
+      name: 'E-Bike VANARA',
+      slug: 'E-Bike Vanara',
+      category: 'Bike',
+      image: '/images/products/product1.png',
+      price: 1182.2,
+      brand: 'Brida',
+      rating: 4.5,
+      numReviews: 10,
+      countInStock: 2,
+      description: 'A popular pants',
+    },
   ],
 };
 export default data;
