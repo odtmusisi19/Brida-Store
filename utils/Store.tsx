@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import Cookies from "js-cookie";
-import React, { createContext, useReducer } from "react";
-import { IProduct } from "../models/Product";
-import { IAuthUser } from "../models/User";
+import Cookies from 'js-cookie';
+import React, { createContext, useReducer } from 'react';
+import { IProduct } from '../models/Product';
+import { IAuthUser } from '../models/User';
 
 export type ShippingAddressType = {
   fullName: string;
@@ -28,15 +28,15 @@ type ContextType = {
 };
 
 enum actionTypes {
-  DARK_MODE_ON = "DARK_MODE_ON",
-  DARK_MODE_OFF = "DARK_MODE_OFF",
-  CART_ADD_ITEM = "CART_ADD_ITEM",
-  CART_REMOVE_ITEM = "CART_REMOVE_ITEM",
-  USER_LOGIN = "USER_LOGIN",
-  USER_LOGOUT = "USER_LOGOUT",
-  SAVE_SHIPPING_ADDRESS = "SAVE_SHIPPING_ADDRESS",
-  SAVE_PAYMENT_METHOD = "SAVE_PAYMENT_METHOD",
-  CART_CLEAR = "CART_CLEAR"
+  DARK_MODE_ON = 'DARK_MODE_ON',
+  DARK_MODE_OFF = 'DARK_MODE_OFF',
+  CART_ADD_ITEM = 'CART_ADD_ITEM',
+  CART_REMOVE_ITEM = 'CART_REMOVE_ITEM',
+  USER_LOGIN = 'USER_LOGIN',
+  USER_LOGOUT = 'USER_LOGOUT',
+  SAVE_SHIPPING_ADDRESS = 'SAVE_SHIPPING_ADDRESS',
+  SAVE_PAYMENT_METHOD = 'SAVE_PAYMENT_METHOD',
+  CART_CLEAR = 'CART_CLEAR',
 }
 
 interface Actions {
@@ -45,21 +45,13 @@ interface Actions {
 }
 
 const initialState: StateType = {
-  darkMode: Cookies.get("darkMode") === "ON" ? true : false,
+  darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
   cart: {
-    cartItems: Cookies.get("cartItems")
-      ? JSON.parse(Cookies.get("cartItems")!)
-      : [],
-    shippingAddress: Cookies.get("shippingAddress")
-      ? JSON.parse(Cookies.get("shippingAddress")!)
-      : {},
-    paymentMethod: Cookies.get("paymentMethod")
-      ? Cookies.get("paymentMethod")
-      : "",
+    cartItems: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems')!) : [],
+    shippingAddress: Cookies.get('shippingAddress') ? JSON.parse(Cookies.get('shippingAddress')!) : {},
+    paymentMethod: Cookies.get('paymentMethod') ? Cookies.get('paymentMethod') : '',
   },
-  userInfo: Cookies.get("userInfo")
-    ? JSON.parse(Cookies.get("userInfo")!)
-    : null,
+  userInfo: Cookies.get('userInfo') ? JSON.parse(JSON.stringify(Cookies.get('userInfo')!)) : null,
 };
 
 const StoreContext = createContext<ContextType>({
@@ -75,22 +67,14 @@ const reducer = (state = initialState, action: Actions): StateType => {
       return { ...state, darkMode: false };
     case actionTypes.CART_ADD_ITEM: {
       const newItem = action.payload as IProduct;
-      const existItem = state.cart.cartItems.find(
-        (item) => item._id === newItem._id
-      );
-      const cartItems = existItem
-        ? state.cart.cartItems.map((item) =>
-            item.name === existItem.name ? newItem : item
-          )
-        : [...state.cart.cartItems, newItem];
-      Cookies.set("cartItems", JSON.stringify(cartItems));
+      const existItem = state.cart.cartItems.find((item) => item._id === newItem._id);
+      const cartItems = existItem ? state.cart.cartItems.map((item) => (item.name === existItem.name ? newItem : item)) : [...state.cart.cartItems, newItem];
+      Cookies.set('cartItems', JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
     case actionTypes.CART_REMOVE_ITEM: {
-      const cartItems = state.cart.cartItems.filter(
-        (item) => item._id !== (action.payload as IProduct)?._id
-      );
-      Cookies.set("cartItems", JSON.stringify(cartItems));
+      const cartItems = state.cart.cartItems.filter((item) => item._id !== (action.payload as IProduct)?._id);
+      Cookies.set('cartItems', JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
     case actionTypes.CART_CLEAR:
@@ -105,7 +89,7 @@ const reducer = (state = initialState, action: Actions): StateType => {
           ...state.cart,
           cartItems: [],
           shippingAddress: null,
-          paymentMethod: "",
+          paymentMethod: '',
         },
       };
     case actionTypes.SAVE_SHIPPING_ADDRESS:
@@ -129,11 +113,7 @@ const reducer = (state = initialState, action: Actions): StateType => {
 const StoreProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  return (
-    <StoreContext.Provider value={{ state, dispatch }}>
-      {children}
-    </StoreContext.Provider>
-  );
+  return <StoreContext.Provider value={{ state, dispatch }}>{children}</StoreContext.Provider>;
 };
 
 export { StoreProvider, actionTypes, StoreContext };

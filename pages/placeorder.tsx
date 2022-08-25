@@ -6,22 +6,7 @@ import Layout from '../components/Layout';
 import { actionTypes, StoreContext } from '../utils/Store';
 import NextLink from 'next/link';
 import Image from 'next/image';
-import {
-  Grid,
-  TableContainer,
-  Table,
-  Typography,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Link,
-  Button,
-  Card,
-  CircularProgress,
-  List,
-  ListItem,
-} from '@material-ui/core';
+import { Grid, TableContainer, Table, Typography, TableHead, TableBody, TableRow, TableCell, Link, Button, Card, CircularProgress, List, ListItem } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import useStyles from '../utils/styles';
 import { IProduct } from '../models/Product';
@@ -36,15 +21,13 @@ function PlaceOrder() {
   const router = useRouter();
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const { state, dispatch} = useContext(StoreContext);
+  const { state, dispatch } = useContext(StoreContext);
   const {
     userInfo,
     cart: { cartItems, shippingAddress, paymentMethod },
   } = state;
   const round2 = (num: number) => Math.round(num * 100 + Number.EPSILON) / 100; // 123.456 => 123.46
-  const itemsPrice = round2(
-    (cartItems as IProduct[]).reduce((a, c) => a + c.price * c.quantity, 0)
-  );
+  const itemsPrice = round2((cartItems as IProduct[]).reduce((a, c) => a + c.price * c.quantity, 0));
   const shippingPrice = itemsPrice > 200 ? 0 : 15;
   const taxPrice = round2(itemsPrice * 0.15);
   const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
@@ -88,10 +71,10 @@ function PlaceOrder() {
       enqueueSnackbar(getError(err), { variant: 'error' });
     }
   };
-  
+
   return (
     <Layout title="Order Page">
-        <CheckoutWizard activeStep={3}></CheckoutWizard>
+      <CheckoutWizard activeStep={3}></CheckoutWizard>
       <Typography component="h1" variant="h1">
         Place Order
       </Typography>
@@ -106,9 +89,7 @@ function PlaceOrder() {
                 </Typography>
               </ListItem>
               <ListItem>
-                {shippingAddress?.fullName}, {shippingAddress?.address},{' '}
-                {shippingAddress?.city}, {shippingAddress?.postalCode},{' '}
-                {shippingAddress?.country}
+                {shippingAddress?.fullName}, {shippingAddress?.address}, {shippingAddress?.city}, {shippingAddress?.postalCode}, {shippingAddress?.country}
               </ListItem>
             </List>
           </Card>
@@ -146,12 +127,7 @@ function PlaceOrder() {
                           <TableCell>
                             <NextLink href={`/product/${item.slug}`} passHref>
                               <Link>
-                                <Image
-                                  src={item.image}
-                                  alt={item.name}
-                                  width={50}
-                                  height={50}
-                                ></Image>
+                                <Image src={item.image} alt={item.name} width={50} height={50}></Image>
                               </Link>
                             </NextLink>
                           </TableCell>
@@ -159,7 +135,7 @@ function PlaceOrder() {
                           <TableCell>
                             <NextLink href={`/product/${item.slug}`} passHref>
                               <Link>
-                                <Typography>{item.name}</Typography>
+                                <Typography color="secondary">{item.name}</Typography>
                               </Link>
                             </NextLink>
                           </TableCell>
@@ -229,7 +205,7 @@ function PlaceOrder() {
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button onClick={placeOrderHandler} variant="contained" color="primary" fullWidth>
+                <Button onClick={placeOrderHandler} variant="contained" color="secondary" fullWidth>
                   Place Order
                 </Button>
               </ListItem>

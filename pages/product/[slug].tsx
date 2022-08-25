@@ -1,27 +1,17 @@
-import React, { useContext } from "react";
-import { InferGetServerSidePropsType } from "next";
-import NextLink from "next/link";
-import Image from "next/image";
-import {
-  Grid,
-  Link,
-  List,
-  ListItem,
-  Typography,
-  Card,
-  Button,
-} from "@material-ui/core";
-import Layout from "../../components/Layout";
-import useStyles from "../../utils/styles";
-import db from "../../utils/db";
-import Product from "../../models/Product";
-import { StoreContext } from "../../utils/Store";
-import axios from "axios";
-import { useRouter } from "next/router";
+import React, { useContext } from 'react';
+import { InferGetServerSidePropsType } from 'next';
+import NextLink from 'next/link';
+import Image from 'next/image';
+import { Grid, Link, List, ListItem, Typography, Card, Button } from '@material-ui/core';
+import Layout from '../../components/Layout';
+import useStyles from '../../utils/styles';
+import db from '../../utils/db';
+import Product from '../../models/Product';
+import { StoreContext } from '../../utils/Store';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
-const ProductDetail: React.ReactNode = ({
-  product,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const ProductDetail: React.ReactNode = ({ product }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const { state, dispatch } = useContext(StoreContext);
   const classes = useStyles();
@@ -35,11 +25,11 @@ const ProductDetail: React.ReactNode = ({
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`);
     if (data.countInStock < quantity) {
-      window.alert("Sorry. Product is out of stock");
+      window.alert('Sorry. Product is out of stock');
       return;
     }
-    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
-    router.push("/cart");
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
+    router.push('/cart');
   };
 
   return (
@@ -47,19 +37,13 @@ const ProductDetail: React.ReactNode = ({
       <div className={classes.section}>
         <NextLink href="/" passHref>
           <Link>
-            <Typography>back to products</Typography>
+            <Typography color="secondary">back to products</Typography>
           </Link>
         </NextLink>
       </div>
       <Grid container spacing={1}>
         <Grid item md={6} xs={12}>
-          <Image
-            src={product.image}
-            alt={product.name}
-            width={640}
-            height={640}
-            layout="responsive"
-          ></Image>
+          <Image src={product.image} alt={product.name} width={640} height={640} layout="responsive"></Image>
         </Grid>
         <Grid item md={3} xs={12}>
           <List>
@@ -103,19 +87,12 @@ const ProductDetail: React.ReactNode = ({
                     <Typography>Status</Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography>
-                      {product.countInStock > 0 ? "In stock" : "Unavailable"}
-                    </Typography>
+                    <Typography>{product.countInStock > 0 ? 'In stock' : 'Unavailable'}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  onClick={addToCartHandler}
-                >
+                <Button fullWidth variant="contained" color="secondary" onClick={addToCartHandler}>
                   Add to cart
                 </Button>
               </ListItem>

@@ -1,32 +1,16 @@
-import React, { useContext } from "react";
-import Layout from "../components/Layout";
-import { actionTypes, StoreContext } from "../utils/Store";
-import NextLink from "next/link";
-import dynamic, { LoaderComponent } from "next/dynamic";
-import Image from "next/image";
-import {
-  Grid,
-  TableContainer,
-  Table,
-  Typography,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Link,
-  Select,
-  MenuItem,
-  Button,
-  Card,
-  List,
-  ListItem,
-} from "@material-ui/core";
-import axios from "axios";
-import { IProduct } from "../models/Product";
-import { useRouter } from "next/router";
+import React, { useContext } from 'react';
+import Layout from '../components/Layout';
+import { actionTypes, StoreContext } from '../utils/Store';
+import NextLink from 'next/link';
+import dynamic, { LoaderComponent } from 'next/dynamic';
+import Image from 'next/image';
+import { Grid, TableContainer, Table, Typography, TableHead, TableBody, TableRow, TableCell, Link, Select, MenuItem, Button, Card, List, ListItem } from '@material-ui/core';
+import axios from 'axios';
+import { IProduct } from '../models/Product';
+import { useRouter } from 'next/router';
 
 const CartScreen: React.ReactNode = () => {
-  const router = useRouter()
+  const router = useRouter();
   const { state, dispatch } = useContext(StoreContext);
   const {
     cart: { cartItems },
@@ -40,7 +24,7 @@ const CartScreen: React.ReactNode = () => {
     }
     dispatch({ type: actionTypes.CART_ADD_ITEM, payload: { ...item, quantity } });
   };
-  
+
   const removeItemHandler = (item: IProduct) => {
     dispatch({ type: actionTypes.CART_REMOVE_ITEM, payload: item });
   };
@@ -58,7 +42,7 @@ const CartScreen: React.ReactNode = () => {
         <div>
           Cart is empty.{' '}
           <NextLink href="/" passHref>
-            <Link>Go shopping</Link>
+            <Link color="secondary">Go shopping</Link>
           </NextLink>
         </div>
       ) : (
@@ -81,12 +65,7 @@ const CartScreen: React.ReactNode = () => {
                       <TableCell>
                         <NextLink href={`/product/${item.slug}`} passHref>
                           <Link>
-                            <Image
-                              src={item.image}
-                              alt={item.name}
-                              width={50}
-                              height={50}
-                            ></Image>
+                            <Image src={item.image} alt={item.name} width={50} height={50}></Image>
                           </Link>
                         </NextLink>
                       </TableCell>
@@ -94,14 +73,12 @@ const CartScreen: React.ReactNode = () => {
                       <TableCell>
                         <NextLink href={`/product/${item.slug}`} passHref>
                           <Link>
-                            <Typography>{item.name}</Typography>
+                            <Typography color="secondary">{item.name}</Typography>
                           </Link>
                         </NextLink>
                       </TableCell>
                       <TableCell align="right">
-                        <Select value={item.quantity} onChange={(e) =>
-                            updateCartHandler(item, e.target.value as number)
-                          }>
+                        <Select value={item.quantity} onChange={(e) => updateCartHandler(item, e.target.value as number)}>
                           {[...Array(item.countInStock).keys()].map((x) => (
                             <MenuItem key={x + 1} value={x + 1}>
                               {x + 1}
@@ -126,20 +103,11 @@ const CartScreen: React.ReactNode = () => {
               <List>
                 <ListItem>
                   <Typography variant="h2">
-                    Subtotal (
-                    {(cartItems as Array<IProduct>).reduce(
-                      (a, c) => a + c.quantity,
-                      0
-                    )}{" "}
-                    items) : $
-                    {(cartItems as Array<IProduct>).reduce(
-                      (a, c) => a + c.quantity * c.price,
-                      0
-                    )}
+                    Subtotal ({(cartItems as Array<IProduct>).reduce((a, c) => a + c.quantity, 0)} items) : ${(cartItems as Array<IProduct>).reduce((a, c) => a + c.quantity * c.price, 0)}
                   </Typography>
                 </ListItem>
                 <ListItem>
-                  <Button variant="contained" color="primary" fullWidth onClick={checkoutHandler}>
+                  <Button variant="contained" color="secondary" fullWidth onClick={checkoutHandler}>
                     Check Out
                   </Button>
                 </ListItem>

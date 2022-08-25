@@ -1,41 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect, useReducer } from "react";
-import dynamic, { LoaderComponent } from "next/dynamic";
-import Layout from "../../components/Layout";
-import { StoreContext } from "../../utils/Store";
-import Image from "next/image";
-import {
-  Grid,
-  TableContainer,
-  Table,
-  Typography,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  CircularProgress,
-  Card,
-  List,
-  ListItem,
-} from "@material-ui/core";
-import axios from "axios";
-import { useRouter } from "next/router";
-import useStyles from "../../utils/styles";
-import { getError } from "../../utils/error";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { IOrder, IOrderItems } from "../../models/Order";
-import {  DISPATCH_ACTION, PayPalButtons, SCRIPT_LOADING_STATE, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { useSnackbar } from "notistack";
+import React, { useContext, useEffect, useReducer } from 'react';
+import dynamic, { LoaderComponent } from 'next/dynamic';
+import Layout from '../../components/Layout';
+import { StoreContext } from '../../utils/Store';
+import Image from 'next/image';
+import { Grid, TableContainer, Table, Typography, TableHead, TableBody, TableRow, TableCell, CircularProgress, Card, List, ListItem } from '@material-ui/core';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import useStyles from '../../utils/styles';
+import { getError } from '../../utils/error';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { IOrder, IOrderItems } from '../../models/Order';
+import { DISPATCH_ACTION, PayPalButtons, SCRIPT_LOADING_STATE, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import { useSnackbar } from 'notistack';
 
 enum actionTypes {
-  FETCH_REQUEST = "FETCH_REQUEST",
-  FETCH_SUCCESS = "FETCH_SUCCESS",
-  FETCH_FAIL = "FETCH_FAIL",
-  PAY_REQUEST = "PAY_REQUEST",
-  PAY_SUCCESS = "PAY_SUCCESS",
-  PAY_FAIL = "PAY_FAIL",
-  PAY_RESET = "PAY_RESET"
+  FETCH_REQUEST = 'FETCH_REQUEST',
+  FETCH_SUCCESS = 'FETCH_SUCCESS',
+  FETCH_FAIL = 'FETCH_FAIL',
+  PAY_REQUEST = 'PAY_REQUEST',
+  PAY_SUCCESS = 'PAY_SUCCESS',
+  PAY_FAIL = 'PAY_FAIL',
+  PAY_RESET = 'PAY_RESET',
 }
 
 interface IState {
@@ -55,9 +42,9 @@ interface IAction {
 function reducer(state: IState, action: IAction): IState {
   switch (action.type) {
     case actionTypes.FETCH_REQUEST:
-      return { ...state, loading: true, error: "" };
+      return { ...state, loading: true, error: '' };
     case actionTypes.FETCH_SUCCESS:
-      return { ...state, loading: false, order: action.payload, error: "" };
+      return { ...state, loading: false, order: action.payload, error: '' };
     case actionTypes.FETCH_FAIL:
       return { ...state, loading: false, error: action.payload };
     case actionTypes.PAY_REQUEST:
@@ -67,15 +54,13 @@ function reducer(state: IState, action: IAction): IState {
     case actionTypes.PAY_FAIL:
       return { ...state, loadingPay: false, errorPay: action.payload };
     case actionTypes.PAY_RESET:
-      return { ...state, loadingPay: false, successPay: false, errorPay: "" };
+      return { ...state, loadingPay: false, successPay: false, errorPay: '' };
     default:
       return state;
   }
 }
 
-const Order = ({
-  params,
-}: InferGetServerSidePropsType<typeof getServerSideProps>): React.ReactNode => {
+const Order = ({ params }: InferGetServerSidePropsType<typeof getServerSideProps>): React.ReactNode => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const orderId = params.id;
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
@@ -87,12 +72,12 @@ const Order = ({
   const [{ loading, error, order, successPay }, dispatch] = useReducer(reducer, {
     loading: true,
     order: null,
-    error: "",
+    error: '',
   });
 
   useEffect(() => {
     if (!userInfo) {
-      router.push("/login");
+      router.push('/login');
       return;
     }
     const fetchOrder = async () => {
@@ -110,18 +95,18 @@ const Order = ({
     if (!order?._id || successPay || (order?._id && order?._id !== orderId)) {
       fetchOrder();
       if (successPay) {
-        dispatch({ type: "PAY_RESET" });
+        dispatch({ type: 'PAY_RESET' });
       }
     } else {
       const loadPaypalScript = async () => {
-        const { data: clientId } = await axios.get("/api/keys/paypal", {
+        const { data: clientId } = await axios.get('/api/keys/paypal', {
           headers: { authorization: `Bearer ${userInfo.token}` },
         });
         paypalDispatch({
           type: DISPATCH_ACTION.RESET_OPTIONS,
           value: {
-            "client-id": clientId,
-            currency: "USD",
+            'client-id': clientId,
+            currency: 'USD',
           },
         });
         paypalDispatch({ type: DISPATCH_ACTION.LOADING_STATUS, value: SCRIPT_LOADING_STATE.PENDING });
@@ -147,40 +132,24 @@ const Order = ({
     return actions.order.capture().then(async function (details: any) {
       try {
         dispatch({ type: actionTypes.PAY_REQUEST });
-        const { data } = await axios.put(
-          `/api/orders/${order?._id}/pay`,
-          details,
-          {
-            headers: { authorization: `Bearer ${userInfo?.token}` },
-          }
-        );
+        const { data } = await axios.put(`/api/orders/${order?._id}/pay`, details, {
+          headers: { authorization: `Bearer ${userInfo?.token}` },
+        });
         dispatch({ type: actionTypes.PAY_SUCCESS, payload: data });
-        enqueueSnackbar("Order is paid", { variant: "success" });
+        enqueueSnackbar('Order is paid', { variant: 'success' });
       } catch (err) {
         dispatch({ type: actionTypes.PAY_FAIL, payload: getError(err) });
-        enqueueSnackbar(getError(err), { variant: "error" });
+        enqueueSnackbar(getError(err), { variant: 'error' });
       }
     });
   }
 
-  function onError(err:any) {
-    enqueueSnackbar(getError(err), { variant: "error" });
+  function onError(err: any) {
+    enqueueSnackbar(getError(err), { variant: 'error' });
   }
 
   if (order) {
-    const {
-      shippingAddress,
-      paymentMethod,
-      orderItems,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
-      isPaid,
-      paidAt,
-      isDelivered,
-      deliveredAt,
-    } = order as IOrder;
+    const { shippingAddress, paymentMethod, orderItems, itemsPrice, taxPrice, shippingPrice, totalPrice, isPaid, paidAt, isDelivered, deliveredAt } = order as IOrder;
 
     return (
       <Layout title={`Order ${orderId}`}>
@@ -202,16 +171,9 @@ const Order = ({
                     </Typography>
                   </ListItem>
                   <ListItem>
-                    {shippingAddress.fullName}, {shippingAddress.address},{" "}
-                    {shippingAddress.city}, {shippingAddress.postalCode},{" "}
-                    {shippingAddress.country}
+                    {shippingAddress.fullName}, {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}
                   </ListItem>
-                  <ListItem>
-                    Status:{" "}
-                    {isDelivered
-                      ? `delivered at ${deliveredAt}`
-                      : "not delivered"}
-                  </ListItem>
+                  <ListItem>Status: {isDelivered ? `delivered at ${deliveredAt}` : 'not delivered'}</ListItem>
                 </List>
               </Card>
               <Card className={classes.section}>
@@ -222,9 +184,7 @@ const Order = ({
                     </Typography>
                   </ListItem>
                   <ListItem>{paymentMethod}</ListItem>
-                  <ListItem>
-                    Status: {isPaid ? `paid at ${paidAt}` : "not paid"}
-                  </ListItem>
+                  <ListItem>Status: {isPaid ? `paid at ${paidAt}` : 'not paid'}</ListItem>
                 </List>
               </Card>
               <Card className={classes.section}>
@@ -249,12 +209,7 @@ const Order = ({
                           {(orderItems as Array<IOrderItems>).map((item) => (
                             <TableRow key={item._id}>
                               <TableCell>
-                                <Image
-                                  src={item.image}
-                                  alt={item.name}
-                                  width={50}
-                                  height={50}
-                                ></Image>
+                                <Image src={item.image} alt={item.name} width={50} height={50}></Image>
                               </TableCell>
 
                               <TableCell>
@@ -328,14 +283,10 @@ const Order = ({
                   {!isPaid && (
                     <ListItem>
                       {isPending ? (
-                        <CircularProgress />
+                        <CircularProgress color="secondary" />
                       ) : (
                         <div className={classes.fullWidth}>
-                          <PayPalButtons
-                            createOrder={createOrder}
-                            onApprove={onApprove}
-                            onError={onError}
-                          ></PayPalButtons>
+                          <PayPalButtons createOrder={createOrder} onApprove={onApprove} onError={onError}></PayPalButtons>
                         </div>
                       )}
                     </ListItem>

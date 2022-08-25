@@ -6,19 +6,10 @@ import { actionTypes, StoreContext } from '../utils/Store';
 import Layout from '../components/Layout';
 import CheckoutWizard from '../components/CheckoutWizard';
 import useStyles from '../utils/styles';
-import {
-  Button,
-  FormControl,
-  FormControlLabel,
-  List,
-  ListItem,
-  Radio,
-  RadioGroup,
-  Typography,
-} from '@material-ui/core';
+import { Button, FormControl, FormControlLabel, List, ListItem, Radio, RadioGroup, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 
-const Payment: React.ReactNode = () =>  {
+const Payment: React.ReactNode = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const classes = useStyles();
   const router = useRouter();
@@ -55,42 +46,20 @@ const Payment: React.ReactNode = () =>  {
         <List>
           <ListItem>
             <FormControl component="fieldset">
-              <RadioGroup
-                aria-label="Payment Method"
-                name="paymentMethod"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              >
-                <FormControlLabel
-                  label="PayPal"
-                  value="PayPal"
-                  control={<Radio />}
-                ></FormControlLabel>
-                <FormControlLabel
-                  label="Stripe"
-                  value="Stripe"
-                  control={<Radio />}
-                ></FormControlLabel>
-                <FormControlLabel
-                  label="Cash"
-                  value="Cash"
-                  control={<Radio />}
-                ></FormControlLabel>
+              <RadioGroup aria-label="Payment Method" name="paymentMethod" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                <FormControlLabel label="PayPal" value="PayPal" control={<Radio />}></FormControlLabel>
+                <FormControlLabel label="Stripe" value="Stripe" control={<Radio />}></FormControlLabel>
+                <FormControlLabel label="Cash" value="Cash" control={<Radio />}></FormControlLabel>
               </RadioGroup>
             </FormControl>
           </ListItem>
           <ListItem>
-            <Button fullWidth type="submit" variant="contained" color="primary">
+            <Button fullWidth type="submit" variant="contained" color="secondary">
               Continue
             </Button>
           </ListItem>
           <ListItem>
-            <Button
-              fullWidth
-              type="button"
-              variant="contained"
-              onClick={() => router.push('/shipping')}
-            >
+            <Button fullWidth type="button" variant="contained" onClick={() => router.push('/shipping')}>
               Back
             </Button>
           </ListItem>
@@ -98,6 +67,6 @@ const Payment: React.ReactNode = () =>  {
       </form>
     </Layout>
   );
-}
+};
 
-export default Payment
+export default Payment;
