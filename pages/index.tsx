@@ -8,6 +8,7 @@ import db from '../utils/db';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { actionTypes, StoreContext } from '../utils/Store';
+import data from '../utils/data';
 
 const Home: React.ReactNode = ({ products }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
@@ -30,7 +31,7 @@ const Home: React.ReactNode = ({ products }: InferGetServerSidePropsType<typeof 
       <div>
         <h1>Products</h1>
         <Grid container spacing={3}>
-          {products.map((product: any) => (
+          {data.products.map((product: any) => (
             <Grid item md={4} key={product.name}>
               <NextLink href={`/product/${product.slug}`} passHref>
                 <Card>
